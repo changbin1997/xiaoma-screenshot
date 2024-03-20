@@ -1,0 +1,78 @@
+{
+  "name": "xiaoma-screenshot",
+  "version": "1.0.0",
+  "description": "Electron screenshot",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "screenshot-desktop": "^1.15.0"
+  },
+  "devDependencies": {
+    "electron": "^29.1.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "xiaoma-screenshot",
+    "productName": "xiaoma-screenshot",
+    "icon": "assets/favicon.ico",
+    "copyright": "Copyright © 2024",
+    "compression": "maximum",
+    "asar": true,
+    "win": {
+      "icon": "assets/favicon.ico",
+      "target": "nsis",
+      "legalTrademarks": "changbin1997"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": false
+    },
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "assets/**/*",
+      "main.js",
+      "package.json",
+      "preload.js",
+      "!**/node_modules/*",
+      "!**/*.map",
+      "!**/.*",
+      "!**/*.{o,hprof,orig,pyc,pyo,rbc}",
+      "!**/._*",
+      "!**/test/**/*",
+      "!**/tests/**/*",
+      "!**/README.md",
+      "!**/README",
+      "!**/readme.md",
+      "!**/readme",
+      "!**/CHANGELOG.md",
+      "!**/changelog.md",
+      "!**/CHANGELOG",
+      "!**/changelog",
+      "!**/CONTRIBUTING.md",
+      "!**/contributing.md",
+      "!**/CONTRIBUTING",
+      "!**/contributing",
+      "!**/LICENSE.md",
+      "!**/license.md",
+      "!**/LICENSE",
+      "!**/license",
+      "!**/HISTORY.md",
+      "!**/history.md",
+      "!**/HISTORY",
+      "!**/history"
+    ]
+  }
+}

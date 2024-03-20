@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>截图</title>
+  <link rel="stylesheet" href="css/icon.css" type="text/css">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <img src="" alt="截取范围选择" id="img" draggable="false">
+  <!--图片选择框-->
+  <div id="select-box"></div>
+  <!--遮罩层-->
+  <div id="overlay"></div>
+  <!--工具栏-->
+  <div role="toolbar" id="toolbar">
+    <a href="javascript:;" role="button" id="graffiti">
+      <i class="icon-pencil2"></i>
+      <span>涂鸦</span>
+    </a>
+    <a href="javascript:;" role="button" id="color-btn">
+      <i class="icon-palette"></i>
+      <span>颜色</span>
+    </a>
+    <a href="javascript:;" role="button" id="clear-btn">
+      <i class="icon-cancel-circle"></i>
+      <span>取消</span>
+    </a>
+    <a href="javascript:;" role="button" id="export-btn">
+      <i class="icon-floppy-disk"></i>
+      <span>保存</span>
+    </a>
+    <a href="javascript:;" role="button" id="copy-btn">
+      <i class="icon-checkmark"></i>
+      <span>完成</span>
+    </a>
+  </div>
+  <!--笔画粗细-->
+  <div id="thickness-options" role="list" aria-label="笔画粗细">
+    <div class="thickness px-2 active" role="listitem" data-px="2">
+      <div class="line"></div>
+    </div>
+    <div class="thickness px-3" role="listitem" data-px="3">
+      <div class="line"></div>
+    </div>
+    <div class="thickness px-5" role="listitem" data-px="5">
+      <div class="line"></div>
+    </div>
+    <div class="thickness px-7" role="listitem" data-px="7">
+      <div class="line"></div>
+    </div>
+  </div>
+  <!--颜色选择-->
+  <div id="color-select">
+    <div id="color-selected"></div>
+    <div id="color-list"></div>
+  </div>
+  <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

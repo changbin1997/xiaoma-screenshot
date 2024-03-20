@@ -1,7 +1,7 @@
 {
   "name": "xiaoma-screenshot",
   "version": "1.0.0",
-  "description": "Electron screenshot",
+  "description": "A useful screenshot tool",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "dist": "electron-builder"
   },
   "keywords": [],
-  "author": "",
+  "author": "changbin1997",
   "license": "MIT",
   "dependencies": {
     "screenshot-desktop": "^1.15.0"
@@ -27,9 +27,10 @@
     "compression": "maximum",
     "asar": true,
     "win": {
-      "icon": "assets/favicon.ico",
+      "icon": "assets/logo.ico",
       "target": "nsis",
-      "legalTrademarks": "changbin1997"
+      "legalTrademarks": "changbin1997",
+      "publisherName": "changbin1997"
     },
     "nsis": {
       "oneClick": false,
@@ -46,6 +47,7 @@
       "main.js",
       "package.json",
       "preload.js",
+      "app/**/*",
       "!**/node_modules/*",
       "!**/*.map",
       "!**/.*",

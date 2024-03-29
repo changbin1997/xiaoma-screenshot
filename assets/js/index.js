@@ -34,8 +34,9 @@ overlayEl.addEventListener('mousedown', ev => {
     selectBoxEl.style.top = ev.clientY + 'px';
     selectBoxEl.style.width = 0;
     selectBoxEl.style.height = 0;
+    // 设置图片选择框的背景图片
     selectBoxEl.style.backgroundImage = `url(${img.src})`;
-    selectBoxEl.style.backgroundPosition = `-${ev.clientX}px -${ev.clientY}px`;
+    selectBoxEl.style.backgroundPosition = `-${ev.clientX + 1}px -${ev.clientY + 1}px`;
     selectBoxPosition.x = ev.clientX;
     selectBoxPosition.y = ev.clientY;
     mouseActive = true;
@@ -46,8 +47,22 @@ overlayEl.addEventListener('mousedown', ev => {
 document.addEventListener('mousemove', ev => {
   // 缩放截图区域
   if (!imgSelected && mouseActive) {
-    selectBoxEl.style.width = ev.clientX - selectBoxPosition.x + 'px';
-    selectBoxEl.style.height = ev.clientY - selectBoxPosition.y + 'px';
+    // 横向缩放
+    if (ev.clientX < selectBoxPosition.x) {
+      selectBoxEl.style.left = ev.clientX + 'px';
+      selectBoxEl.style.width = selectBoxPosition.x - ev.clientX + 'px';
+      selectBoxEl.style.backgroundPosition = `-${selectBoxEl.offsetLeft + 1}px -${selectBoxEl.offsetTop + 1}px`;
+    }else {
+      selectBoxEl.style.width = ev.clientX - selectBoxPosition.x + 'px';
+    }
+    // 纵向缩放
+    if (ev.clientY < selectBoxPosition.y) {
+      selectBoxEl.style.top = ev.clientY + 'px';
+      selectBoxEl.style.height = selectBoxPosition.y - ev.clientY + 'px';
+      selectBoxEl.style.backgroundPosition = `-${selectBoxEl.offsetLeft + 1}px -${selectBoxEl.offsetTop + 1}px`;
+    }else {
+      selectBoxEl.style.height = ev.clientY - selectBoxPosition.y + 'px';
+    }
   }
   // 图片选择框移动
   if (moveSelectBox && mouseActive) {
@@ -72,6 +87,11 @@ document.addEventListener('mousemove', ev => {
 document.addEventListener('mouseup', () => {
   mouseActive = false;
   if (!imgSelected || moveSelectBox) {
+    // 如果图片选择框大小 <= 2 就取消选择，可以避免只是点击就弹出图片工具栏
+    if (!imgSelected && selectBoxEl.offsetWidth <= 2 || selectBoxEl.offsetHeight <= 2) {
+      selectBoxEl.style.display = 'none';
+      return false;
+    }
     // 显示图片操作工具栏
     toolbarEl.style.display = 'flex';
     if (selectBoxEl.offsetTop + selectBoxEl.offsetHeight < window.innerHeight - 30) {
@@ -81,7 +101,12 @@ document.addEventListener('mouseup', () => {
     }else {
       toolbarEl.style.top = selectBoxEl.offsetTop + selectBoxEl.offsetHeight - toolbarEl.offsetHeight + 'px';
     }
-    toolbarEl.style.left = selectBoxEl.offsetLeft + selectBoxEl.offsetWidth - toolbarEl.offsetWidth + 'px';
+    // 设置图片工具栏的 left
+    if (selectBoxEl.offsetLeft + selectBoxEl.offsetWidth - toolbarEl.offsetWidth >= 0) {
+      toolbarEl.style.left = selectBoxEl.offsetLeft + selectBoxEl.offsetWidth - toolbarEl.offsetWidth + 'px';
+    }else {
+      toolbarEl.style.left = selectBoxEl.offsetLeft + 'px';
+    }
   }
   if (!imgSelected) imgSelected = true;
   moveSelectBox = false;

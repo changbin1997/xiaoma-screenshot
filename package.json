@@ -75,6 +75,16 @@
       "!**/history.md",
       "!**/HISTORY",
       "!**/history"
+    ],
+    "extraFiles": [
+      {
+        "from": "node_modules/screenshot-desktop/lib/win32/screenCapture_1.3.2.bat",
+        "to": "resources/app.asar.unpacked/node_modules/screenshot-desktop/lib/win32/screenCapture_1.3.2.bat"
+      },
+      {
+        "from": "node_modules/screenshot-desktop/lib/win32/app.manifest",
+        "to": "resources/app.asar.unpacked/node_modules/screenshot-desktop/lib/win32/app.manifest"
+      }
     ]
   }
 }

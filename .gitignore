@@ -5,6 +5,7 @@ dist/
 tmp/
 out/
 build/
+release/
 
 *.log
 npm-debug.log*

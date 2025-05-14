@@ -11,6 +11,18 @@ module.exports = class Screenshot {
     shell.openPath(dir);
   }
 
+  // 生成时间文件名
+  formatTimestamp(date = new Date()) {
+    const pad = n => String(n).padStart(2, '0');
+    const Y = date.getFullYear();
+    const M = pad(date.getMonth() + 1);
+    const D = pad(date.getDate());
+    const h = pad(date.getHours());
+    const m = pad(date.getMinutes());
+    const s = pad(date.getSeconds());
+    return `${Y}-${M}-${D}-${h}-${m}-${s}`;
+  }
+
   // 全屏截图
   fullScreen() {
     let fileName = os.homedir();
@@ -18,7 +30,7 @@ module.exports = class Screenshot {
     if (fs.existsSync(path.join(fileName, 'Pictures'))) {
       fileName = path.join(fileName, 'Pictures');
     }
-    fileName = path.join(fileName, `${Math.round(new Date().getTime() / 1000)}.png`);
+    fileName = path.join(fileName, `screenshot-${this.formatTimestamp()}.png`);
     // 截图
     screenshotDesktop({filename: fileName}).then(imgPath => {
       new Notification({
@@ -62,7 +74,7 @@ module.exports = class Screenshot {
   // 导出图片
   export(base64Img) {
     // 默认文件名
-    const defaultName = `${Math.round(new Date().getTime() / 1000)}.png`;
+    const defaultName = `screenshot-${this.formatTimestamp()}.png`;
     // 显示文件对话框
     const fileName = dialog.showSaveDialogSync(BrowserWindow.getFocusedWindow(), {
       title: '保存位置选择',

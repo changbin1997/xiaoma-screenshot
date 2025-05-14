@@ -1,10 +1,16 @@
 const screenshotDesktop = require('screenshot-desktop');
-const {dialog, nativeImage, clipboard, BrowserWindow, Notification} = require('electron');
+const {dialog, nativeImage, clipboard, BrowserWindow, Notification, shell} = require('electron');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
 module.exports = class Screenshot {
+  // 打开全屏截图的目录
+  openFullScreenDir() {
+    const dir = path.join(os.homedir(), 'Pictures');
+    shell.openPath(dir);
+  }
+
   // 全屏截图
   fullScreen() {
     let fileName = os.homedir();

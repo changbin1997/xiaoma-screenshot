@@ -13,7 +13,8 @@ module.exports = class App {
   // 托盘图标菜单
   trayMenu(mainWindow) {
     // 创建系统托盘
-    const tray = new Tray(path.join(process.cwd(), 'assets', 'favicon.ico'));
+    const icon = path.normalize(path.join(__dirname, '../assets/favicon.ico'));
+    const tray = new Tray(icon);
     // 菜单模板
     const menu = [
       {

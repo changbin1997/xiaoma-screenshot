@@ -1,0 +1,14 @@
+export const canvasEl = document.querySelector('#canvas');
+export const imgEl = document.querySelector('#img');
+export const overlayEl = document.querySelector('#overlay');  // 图片遮罩层
+export const toolbarEl = document.querySelector('#toolbar');  // 图片工具栏
+export const selectBoxEl = document.querySelector('#select-box');  // 图片选择框
+export const thicknessOptionsEl = document.querySelectorAll('#thickness-options .thickness');  // 颜色选择
+export const clearBtnEl = document.querySelector('#clear-btn');  // 取消截图
+export const exportBtnEl = document.querySelector('#export-btn');  // 保存截图
+export const copyBtnEl = document.querySelector('#copy-btn');  // 拷贝图片
+export const graffitiBtnEl = document.querySelector('#graffiti');  // 涂鸦按钮
+export const colorBtnEl = document.querySelector('#color-btn');
+export const colorListEl = document.querySelector('#color-list');  // 颜色色块表
+export const colorSelectEl = document.querySelector('#color-select');  // 颜色选择对话框
+export const thicknessBox = document.querySelector('#thickness-options');  // 笔画设置对话框

@@ -1,4 +1,4 @@
-import {selectBoxEl} from './DOM.js';
+import {selectBoxEl, topBtn, rightBtn, bottomBtn, leftBtn} from './DOM.js';
 
 export default class Selection {
   selectBoxEl;
@@ -10,6 +10,127 @@ export default class Selection {
   mouseX;
   mouseY;
   imgSelected = false;  // 图片区域选择完成
+  zoomActive = {top: false, left: false, right: false, bottom: false};  // 拖拽缩放的方向
+
+  // 鼠标放开停止缩放
+  stopZoom() {
+    this.zoomActive.top = false;
+    this.zoomActive.right = false;
+    this.zoomActive.bottom = false;
+    this.zoomActive.left = false;
+  }
+
+  // 鼠标移动缩放
+  moveZoom(ev) {
+    // 右侧缩放按钮移动
+    if (this.zoomActive.right) {
+      if (ev.clientX - selectBoxEl.offsetLeft - this.mouseX <= 5) return false;
+      selectBoxEl.style.width = `${ev.clientX - selectBoxEl.offsetLeft - this.mouseX}px`;
+      // 设置图片选择框内的图片
+      selectBoxEl.style.backgroundPosition = `-${
+        selectBoxEl.offsetLeft
+      }px -${
+        selectBoxEl.offsetTop
+      }px`;
+    }
+
+    // 下方缩放按钮移动
+    if (this.zoomActive.bottom) {
+      if (ev.clientY - selectBoxEl.offsetTop - this.mouseY <= 5) return false;
+      selectBoxEl.style.height = `${ev.clientY - selectBoxEl.offsetTop - this.mouseY}px`;
+      // 设置图片选择框内的图片
+      selectBoxEl.style.backgroundPosition = `-${
+        selectBoxEl.offsetLeft
+      }px -${
+        selectBoxEl.offsetTop
+      }px`;
+    }
+
+    // 左侧缩放按钮移动
+    if (this.zoomActive.left) {
+      if (this.x - ev.clientX + this.mouseX <= 5) return false;
+      selectBoxEl.style.left = `${ev.clientX + this.mouseX}px`;
+      selectBoxEl.style.width = `${this.x - ev.clientX + this.mouseX}px`;
+      // 设置图片选择框内的图片
+      selectBoxEl.style.backgroundPosition = `-${
+        selectBoxEl.offsetLeft
+      }px -${
+        selectBoxEl.offsetTop
+      }px`;
+    }
+
+    // 上方缩放按钮移动
+    if (this.zoomActive.top) {
+      if (this.y - ev.clientY + this.mouseY <= 5) return false;
+      selectBoxEl.style.top = `${ev.clientY + this.mouseY}px`;
+      selectBoxEl.style.height = `${this.y - ev.clientY + this.mouseY}px`;
+      // 设置图片选择框内的图片
+      selectBoxEl.style.backgroundPosition = `-${
+        selectBoxEl.offsetLeft
+      }px -${
+        selectBoxEl.offsetTop
+      }px`;
+    }
+  }
+
+  // 鼠标按下，准备开始缩放
+  startZoom(ev) {
+    ev.stopPropagation();
+    // 获取方向
+    const direction = ev.target.getAttribute('data-direction');
+    if (direction === 'top' || direction === 'left') {
+      // 往左侧或上方缩放
+      this.mouseX = selectBoxEl.offsetLeft - ev.clientX;
+      this.mouseY = selectBoxEl.offsetTop - ev.clientY;
+      this.x = selectBoxEl.offsetLeft + selectBoxEl.offsetWidth;
+      this.y = selectBoxEl.offsetTop + selectBoxEl.offsetHeight;
+    }else {
+      // 往右侧或下方缩放
+      this.mouseX = ev.clientX - selectBoxEl.offsetLeft - selectBoxEl.offsetWidth;
+      this.mouseY = ev.clientY - selectBoxEl.offsetTop - selectBoxEl.offsetHeight;
+    }
+    this.zoomActive[direction] = true;
+  }
+
+  // 隐藏缩放按钮
+  hideZoomBtn() {
+    topBtn.style.display = 'none';
+    rightBtn.style.display = 'none';
+    bottomBtn.style.display = 'none';
+    leftBtn.style.display = 'none';
+  }
+
+  // 显示拖拽缩放按钮
+  showZoomBtn() {
+    // 生成上方的拖拽缩放按钮
+    topBtn.style.top = '-4px';
+    topBtn.style.left = '50%';
+    topBtn.style.transform = 'translate(-50%, 0)';
+    topBtn.style.display = 'block';
+
+    // 生成下方的拖拽缩放按钮
+    bottomBtn.style.bottom = '-4px';
+    bottomBtn.style.left = '50%';
+    bottomBtn.style.transform = 'translate(-50%, 0)';
+    bottomBtn.style.display = 'block';
+
+    // 生成左侧的拖拽缩放按钮
+    leftBtn.style.left = '-4px';
+    leftBtn.style.top = '50%';
+    leftBtn.style.transform = 'translate(0, -50%)';
+    leftBtn.style.display = 'block';
+
+    // 生成右侧的拖拽缩放按钮
+    rightBtn.style.right = '-4px';
+    rightBtn.style.top = '50%';
+    rightBtn.style.transform = 'translate(0, -50%)';
+    rightBtn.style.display = 'block';
+
+    this.zoomActive.top = false;
+    this.zoomActive.left = false;
+    this.zoomActive.bottom = false;
+    this.zoomActive.right = false;
+  }
 
   // 拖拽移动选择框
   selectBoxMove(ev) {
@@ -32,7 +153,7 @@ export default class Selection {
       window.innerHeight
     ) {
       selectBoxEl.style.top = `${
-        window.innerHeight - selectBoxEl.offsetH
+        window.innerHeight - selectBoxEl.offsetHeight
       }px`;
     }
     // 设置图片选择框内的图片

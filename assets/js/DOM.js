@@ -12,3 +12,8 @@ export const colorBtnEl = document.querySelector('#color-btn');
 export const colorListEl = document.querySelector('#color-list');  // 颜色色块表
 export const colorSelectEl = document.querySelector('#color-select');  // 颜色选择对话框
 export const thicknessBox = document.querySelector('#thickness-options');  // 笔画设置对话框
+// 4个用于缩放的按钮
+export const topBtn = document.querySelector('.top-btn');
+export const leftBtn = document.querySelector('.left-btn');
+export const bottomBtn = document.querySelector('.bottom-btn');
+export const rightBtn = document.querySelector('.right-btn');

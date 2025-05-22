@@ -76,17 +76,17 @@ export default class Toolbar {
     // 显示图片操作工具栏
     toolbarEl.style.display = 'flex';
     // 调整工具栏的位置
-    if (selectBoxPosition.top + selectBoxPosition.height < window.innerHeight - 30) {
+    if (selectBoxPosition.top + selectBoxPosition.height < window.innerHeight - 34) {
       toolbarEl.style.top = `${
-        selectBoxPosition.top + selectBoxPosition.height
+        selectBoxPosition.top + selectBoxPosition.height + 4
       }px`;
-    }else if (selectBoxPosition.top >= 30) {
-      toolbarEl.style.top = `${selectBoxPosition.top - 30}px`;
+    }else if (selectBoxPosition.top >= 34) {
+      toolbarEl.style.top = `${selectBoxPosition.top - 34}px`;
     }else {
       toolbarEl.style.top = `${
         selectBoxPosition.top +
         selectBoxPosition.height -
-        toolbarEl.offsetHeight
+        toolbarEl.offsetHeight - 4
       }px`;
     }
     // 设置图片工具栏的 left

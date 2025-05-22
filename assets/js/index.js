@@ -6,14 +6,14 @@ import {
   thicknessOptionsEl,
   clearBtnEl,
   exportBtnEl,
-  copyBtnEl, graffitiBtnEl, colorBtnEl, colorListEl
+  copyBtnEl, graffitiBtnEl, colorBtnEl, colorListEl,
+  topBtn, rightBtn, bottomBtn, leftBtn
 } from "./DOM.js";
 let mouseActive = false;
 
 import Selection from './Selection.js';
 import Toolbar from './Toolbar.js';
 import Canvas from './Canvas.js';
-import './DOM.js';
 
 const selection = new Selection();
 const toolbar = new Toolbar();
@@ -40,12 +40,15 @@ document.addEventListener('mousemove', ev => {
   if (!selection.imgSelected && mouseActive) selection.select(ev);
   // 图片选择框移动
   if (selection.moveSelectBox && mouseActive) selection.selectBoxMove(ev);
+  // 缩放按钮移动
+  if (mouseActive) selection.moveZoom(ev);
 });
 
 // 图像显示区域鼠标放开
 document.addEventListener('mouseup', () => {
   mouseActive = false;
-  if (!selection.imgSelected || selection.moveSelectBox) {
+  // 区域选择放开
+  if (!selection.imgSelected) {
     // 如果图片选择框大小 <= 2 就取消选择，可以避免只是点击就弹出图片工具栏
     if (!selection.imgSelected && selectBoxEl.offsetWidth <= 2 || selectBoxEl.offsetHeight <= 2) {
       selectBoxEl.style.display = 'none';
@@ -53,9 +56,23 @@ document.addEventListener('mouseup', () => {
     }
     // 显示工具栏
     toolbar.showToolbar(selection.getSelectBoxPosition());
+    if (!selection.imgSelected) selection.imgSelected = true;  // 图片选择完成
   }
-  if (!selection.imgSelected) selection.imgSelected = true;  // 图片选择完成
-  selection.moveSelectBox = false;  // 取消拖拽移动
+  // 拖拽移动位置放开
+  if (selection.moveSelectBox) {
+    selection.moveSelectBox = false;  // 取消拖拽移动
+    // 显示工具栏
+    toolbar.showToolbar(selection.getSelectBoxPosition());
+  }
+  // 拖拽缩放按钮放开
+  if (selection.zoomActive.top || selection.zoomActive.right || selection.zoomActive.bottom || selection.zoomActive.left) {
+    // 停止缩放
+    selection.stopZoom();
+    // 显示工具栏
+    toolbar.showToolbar(selection.getSelectBoxPosition());
+  }
+  // 如果 canvas 还没有截取图片
+  if (!canvas.screenshotCompleted) selection.showZoomBtn();  // 显示拖拽缩放按钮
 });
 
 // 图片选择框鼠标按下（拖拽移动）
@@ -64,6 +81,15 @@ selectBoxEl.addEventListener('mousedown', ev => {
   toolbar.hideToolbar();
   selection.selectBoxStartMove(ev);
   mouseActive = true;
+});
+
+// 拖拽缩放按钮鼠标按下，准备缩放
+[topBtn, rightBtn, bottomBtn, leftBtn].forEach(el => {
+  el.addEventListener('mousedown', ev => {
+    selection.startZoom(ev);
+    toolbar.hideToolbar();
+    mouseActive = true;
+  });
 });
 
 // 取消截图按钮点击
@@ -83,6 +109,7 @@ exportBtnEl.addEventListener('click', async () => {
   if (!canvas.screenshotCompleted) {
     const selectBoxPosition = selection.getSelectBoxPosition();
     canvas.screenshot(selectBoxPosition.top, selectBoxPosition.left, selectBoxPosition.width, selectBoxPosition.height, imgEl);
+    selection.hideZoomBtn();
   }
   // 把图片传给主进程
   await window.electronAPI['ipc-invoke']('export-img', canvas.getDataURL());
@@ -99,6 +126,7 @@ copyBtnEl.addEventListener('click', async () => {
   if (!canvas.screenshotCompleted) {
     const selectBoxPosition = selection.getSelectBoxPosition();
     canvas.screenshot(selectBoxPosition.top, selectBoxPosition.left, selectBoxPosition.width, selectBoxPosition.height, imgEl);
+    selection.hideZoomBtn();
   }
   await window.electronAPI['ipc-invoke']('copy-img', canvas.getDataURL());
   selection.imgSelected = false;
@@ -124,6 +152,7 @@ overlayEl.addEventListener('click', () => {
 // 笔画粗细选择
 thicknessOptionsEl.forEach(el => {
   el.addEventListener('click', ev => {
+    ev.stopPropagation();
     let targetEl = ev.target;
     if (ev.target.classList.item(0) === 'line') {
       targetEl = ev.target.parentNode;
@@ -142,6 +171,7 @@ graffitiBtnEl.addEventListener('click', () => {
   if (!canvas.screenshotCompleted) {
     const selectBoxPosition = selection.getSelectBoxPosition();
     canvas.screenshot(selectBoxPosition.top, selectBoxPosition.left, selectBoxPosition.width, selectBoxPosition.height, img);
+    selection.hideZoomBtn();
   }
   toolbar.showThicknessOptions(canvas.color);
 });
@@ -169,6 +199,7 @@ canvasEl.addEventListener('mouseout', () => {
 
 // 颜色色块点击
 colorListEl.addEventListener('click', ev => {
+  ev.stopPropagation();
   if (ev.target.classList.item(0) !== 'color-item') return false;
   canvas.color = ev.target.getAttribute('data-color');
   document.querySelector('#color-selected').style.background = canvas.color;
@@ -181,6 +212,7 @@ colorBtnEl.addEventListener('click', () => {
   if (!canvas.screenshotCompleted) {
     const selectBoxPosition = selection.getSelectBoxPosition();
     canvas.screenshot(selectBoxPosition.top, selectBoxPosition.left, selectBoxPosition.width, selectBoxPosition.height, img);
+    selection.hideZoomBtn();
   }
   // 打开颜色选择对话框
   toolbar.showColorSelect();

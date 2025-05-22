@@ -11,7 +11,12 @@
   <canvas id="canvas" style="display: none;"></canvas>
   <img src="" alt="截取范围选择" id="img" draggable="false">
   <!--图片选择框-->
-  <div id="select-box"></div>
+  <div id="select-box">
+    <div class="zoom-btn top-btn" data-direction="top"></div>
+    <div class="zoom-btn bottom-btn" data-direction="bottom"></div>
+    <div class="zoom-btn left-btn" data-direction="left"></div>
+    <div class="zoom-btn right-btn" data-direction="right"></div>
+  </div>
   <!--遮罩层-->
   <div id="overlay"></div>
   <!--工具栏-->

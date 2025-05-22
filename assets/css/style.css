@@ -43,6 +43,23 @@ a {
   z-index: 20;
 }
 
+/*选择框缩放按钮*/
+.zoom-btn {
+  width: 8px;
+  height: 8px;
+  background: #0000FF;
+  position: absolute;
+  display: none;
+}
+/*上下缩放的按钮*/
+.top-btn, .bottom-btn {
+  cursor: ns-resize;
+}
+/*左右缩放的按钮*/
+.left-btn, .right-btn {
+  cursor: ew-resize;
+}
+
 #canvas {
   position: fixed;
   z-index: 30;

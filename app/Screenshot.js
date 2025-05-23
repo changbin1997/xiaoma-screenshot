@@ -1,13 +1,21 @@
 const screenshotDesktop = require('screenshot-desktop');
-const {dialog, nativeImage, clipboard, BrowserWindow, Notification, shell} = require('electron');
+const {app, dialog, nativeImage, clipboard, BrowserWindow, Notification, shell} = require('electron');
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 
 module.exports = class Screenshot {
   // 打开全屏截图的目录
   openFullScreenDir() {
-    const dir = path.join(os.homedir(), 'Pictures');
+    const dir = app.getPath('pictures');
+    if (!fs.existsSync(dir)) {
+      dialog.showMessageBoxSync(BrowserWindow.getFocusedWindow(), {
+        message: `无法找到用户图片目录 ${dir} !`,
+        type: 'error',
+        buttons: ['关闭'],
+        title: '无法找到目录'
+      });
+      return false;
+    }
     shell.openPath(dir);
   }
 
@@ -25,12 +33,21 @@ module.exports = class Screenshot {
 
   // 全屏截图
   fullScreen() {
-    let fileName = os.homedir();
+    let fileName = app.getPath('pictures');
     // 检查用户目录里是否有存放图片的目录
-    if (fs.existsSync(path.join(fileName, 'Pictures'))) {
-      fileName = path.join(fileName, 'Pictures');
+    if (fs.existsSync(fileName)) {
+      fileName = path.join(fileName, `screenshot-${this.formatTimestamp()}.png`);
+    }else {
+      // 如果找不到存放图片的目录就让用户手动选择
+      fileName = dialog.showSaveDialogSync(BrowserWindow.getFocusedWindow(), {
+        title: '无法找到默认的图片存储位置，请选择图片存储位置。',
+        buttonLabel: '保存',
+        defaultPath: path.join(process.cwd(), `screenshot-${this.formatTimestamp()}.png`)
+      });
     }
-    fileName = path.join(fileName, `screenshot-${this.formatTimestamp()}.png`);
+
+    if (fileName === undefined || fileName === '') return false;
+
     // 截图
     screenshotDesktop({filename: fileName}).then(imgPath => {
       new Notification({

@@ -90,15 +90,21 @@ module.exports = class Screenshot {
 
   // 导出图片
   export(base64Img) {
-    // 默认文件名
-    const defaultName = `screenshot-${this.formatTimestamp()}.png`;
+    // 获取用户图片目录作为默认的导出目录
+    let defaultName = app.getPath('pictures');
+    if (fs.existsSync(defaultName)) {
+      defaultName = path.join(defaultName, `screenshot-${this.formatTimestamp()}.png`);
+    }else {
+      // 用户图片目录不存在就使用桌面目录
+      defaultName = path.join(app.getPath('desktop'), `screenshot-${this.formatTimestamp()}.png`);
+    }
     // 显示文件对话框
     const fileName = dialog.showSaveDialogSync(BrowserWindow.getFocusedWindow(), {
       title: '保存位置选择',
       buttonLabel: '保存',
-      defaultPath: path.join(process.cwd(), defaultName)
+      defaultPath: defaultName
     });
-    if (fileName === undefined) return false;
+    if (fileName === undefined || fileName === '') return false;
     // 替换图片文件的头信息
     const imgData = base64Img.replace(/^data:image\/png;base64,/, '');
     try {
